@@ -23,8 +23,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 "lastname VARCHAR(50), " +
                 "age tinyint, " +
                 "PRIMARY KEY (id))";
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.executeUpdate(sql);
             System.out.println("Таблица успешно создана");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,8 +34,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         String sql = "DROP TABLE if exists mysqldb.User";
-        try (Statement statement = connection.createStatement()){
-            statement.executeUpdate(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.executeUpdate(sql);
             System.out.println("Таблица успешно удалена");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,8 +59,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) throws SQLException {
         String sql = "DELETE FROM mysqldb.User WHERE id";
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.executeUpdate(sql);
             System.out.println("Пользователь удален");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,8 +71,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT id, name, lastName, age FROM mysqldb.User";
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery(sql);
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getLong("id"));
@@ -90,13 +90,13 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        String sql = "DELETE FROM mysqldb.User";
+        String sql = "TRUNCATE TABLE mysqldb.User";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate(sql);
             System.out.println("Таблица успешно очищена");
         } catch (SQLException e) {
             e.printStackTrace();
-            System.err.println("При очищении таблицы произошло ошибка");
+            System.err.println("При очищении таблицы произошла ошибка");
         }
 
     }
